@@ -2,7 +2,7 @@
 
 A Python service that receives transaction webhooks from payment processors (such as Razorpay), acknowledges them immediately with `202 Accepted`, and processes each transaction reliably in the background. Processing includes a simulated 30-second external API call.
 
-**Live API:** `LIVE_URL`
+**Live API:** `https://txn-webhook-service-p2zy.onrender.com`
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -14,7 +14,7 @@ A Python service that receives transaction webhooks from payment processors (suc
 ## Quick test against the live service
 
 ```bash
-URL=LIVE_URL
+URL=https://txn-webhook-service-p2zy.onrender.com
 
 # 1. Send a webhook. You get 202 immediately.
 curl -i -X POST $URL/v1/webhooks/transactions \
@@ -34,7 +34,7 @@ Or run the full end-to-end check, which covers all four success criteria:
 
 ```bash
 pip install httpx
-python scripts/smoke_test.py LIVE_URL
+python scripts/smoke_test.py https://txn-webhook-service-p2zy.onrender.com
 ```
 
 The script tests the health check, a single transaction processed after about 30 seconds, four duplicate deliveries (sent one after another and at the same time), webhook latency while 50 transactions are processing, rejection of invalid payloads, and a 404 for unknown IDs.
@@ -68,7 +68,7 @@ Docker: `docker build -t txn-webhooks . && docker run -p 8000:8000 -e DATABASE_U
 | `SWEEP_INTERVAL_SECONDS` | `5` | How often the recovery sweeper looks for orphaned or retryable rows |
 | `MAX_CONCURRENCY` | `500` | Transactions processed at once per instance |
 | `MAX_ATTEMPTS` | `5` | Retries before a transaction is parked as `FAILED` |
-| `KEEPALIVE_URL` | `RENDER_EXTERNAL_URL` | URL the app pings to stop a free host from sleeping |
+| `KEEPAhttps://txn-webhook-service-p2zy.onrender.com` | `RENDER_EXTERNAL_URL` | URL the app pings to stop a free host from sleeping |
 
 ## How it works
 
