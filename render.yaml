@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: txn-webhook-service
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PROCESSING_DELAY_SECONDS
+        value: "30"

@@ -1,0 +1,15 @@
+# Backup for the in-app keep-alive: Render's free tier sleeps after 15 idle minutes.
+# Set the SERVICE_URL repository variable to the deployed URL to enable.
+name: Keep warm
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    if: vars.SERVICE_URL != ''
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS --max-time 60 "${{ vars.SERVICE_URL }}/" || true
