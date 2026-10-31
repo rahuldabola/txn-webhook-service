@@ -68,7 +68,7 @@ Docker: `docker build -t txn-webhooks . && docker run -p 8000:8000 -e DATABASE_U
 | `SWEEP_INTERVAL_SECONDS` | `5` | How often the recovery sweeper looks for orphaned or retryable rows |
 | `MAX_CONCURRENCY` | `500` | Transactions processed at once per instance |
 | `MAX_ATTEMPTS` | `5` | Retries before a transaction is parked as `FAILED` |
-| `KEEPAhttps://txn-webhook-service-p2zy.onrender.com` | `RENDER_EXTERNAL_URL` | URL the app pings to stop a free host from sleeping |
+| `KEEPALIVE_URL` | `RENDER_EXTERNAL_URL` | URL the app pings to stop a free host from sleeping |
 
 ## How it works
 
