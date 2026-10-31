@@ -1,3 +1,4 @@
+import asyncio
 import threading
 import time
 from datetime import UTC, datetime, timedelta
@@ -186,11 +187,16 @@ def test_claim_is_exclusive(client):
     client.post("/v1/webhooks/transactions", json=PAYLOAD | {"transaction_id": "txn_claim"})
     worker = client.app.state.worker
 
-    async def claim_twice():
-        # the webhook already claimed it, so further claims must fail while the lease is live
-        return await worker._claim("txn_claim"), await worker._claim("txn_claim")
+    async def race():
+        # the webhook's own task races these claims; whoever wins, only one claim may succeed
+        claims = await asyncio.gather(*(worker._claim("txn_claim") for _ in range(5)))
+        async with client.app.state.sessionmaker() as session:
+            row = await session.get(Transaction, "txn_claim")
+        return claims, row.attempts
 
-    assert client.portal.call(claim_twice) == (None, None)
+    claims, attempts = client.portal.call(race)
+    assert sum(c is not None for c in claims) <= 1
+    assert attempts == 1
 
 
 def test_shutdown_releases_inflight_work(settings):
